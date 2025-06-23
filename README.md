@@ -25,7 +25,7 @@
 2. cd into project
 3. Start server on port 8112 with the command: `./gradlew server:bootRun`
 4. Build the api side of the app with command: `./gradlew clean build`
-5. Start the app with command: `./gradlew bootRun`
+5. Start the app on port 8111 with command: `./gradlew bootRun`
 
 ## Run tests
 
