@@ -1,0 +1,183 @@
+package com.reliaquest.api.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.reliaquest.api.dto.EmployeeInputDTO;
+import com.reliaquest.api.dto.EmployeeResponseDTO;
+import com.reliaquest.api.exception.ResourceNotFoundException;
+import com.reliaquest.api.service.MockEmployeeApiService;
+import org.junit.jupiter.api.*;
+import org.mockito.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+class EmployeeControllerIntegrationTest {
+
+    @Autowired
+    MockMvc mockMvc;
+
+    @MockBean
+    MockEmployeeApiService service;
+
+    @Autowired
+    ObjectMapper objectMapper;
+
+    @Test
+    void testGetAllEmployees_returnsList() throws Exception {
+        EmployeeResponseDTO emp = new EmployeeResponseDTO();
+        emp.setEmployee_name("Chirag");
+
+        when(service.getAllEmployees()).thenReturn(List.of(emp));
+
+        mockMvc.perform(get("/employees"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(List.of(emp))));
+
+        verify(service).getAllEmployees();
+    }
+
+    @Test
+    void testGetEmployeeById_found() throws Exception {
+        EmployeeResponseDTO emp = new EmployeeResponseDTO();
+        emp.setEmployee_name("Chirag");
+
+        when(service.getEmployeeById("123")).thenReturn(emp);
+
+        mockMvc.perform(get("/employees/123"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(emp)));
+
+        verify(service).getEmployeeById("123");
+    }
+
+    @Test
+    void testGetEmployeeById_notFound() throws Exception {
+        when(service.getEmployeeById("999")).thenReturn(null);
+
+        mockMvc.perform(get("/employees/999"))
+                .andExpect(status().isNotFound());
+
+        verify(service).getEmployeeById("999");
+    }
+
+    @Test
+    void testCreateEmployee_success() throws Exception {
+        EmployeeInputDTO input = new EmployeeInputDTO();
+        input.setName("Chirag");
+        input.setSalary(1000);
+        input.setAge(24);
+        input.setTitle("Test");
+
+        EmployeeResponseDTO output = new EmployeeResponseDTO();
+        output.setEmployee_name("Chirag");
+
+        when(service.createEmployee(any())).thenReturn(output);
+
+        mockMvc.perform(
+                post("/employees")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input)))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(output)));
+
+        verify(service).createEmployee(any());
+    }
+
+    @Test
+    void testDeleteEmployeeById_deleted() throws Exception {
+        EmployeeResponseDTO emp = new EmployeeResponseDTO();
+        emp.setEmployee_name("Chirag");
+
+        when(service.getEmployeeById("123")).thenReturn(emp);
+        when(service.deleteEmployeeByName("Chirag")).thenReturn(true);
+
+        mockMvc.perform(delete("/employees/123"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Deleted employee: Chirag"));
+
+        verify(service).getEmployeeById("123");
+        verify(service).deleteEmployeeByName("Chirag");
+    }
+
+    @Test
+    void testDeleteEmployeeById_notFound() throws Exception {
+        when(service.getEmployeeById("999")).thenReturn(null);
+
+        mockMvc.perform(delete("/employees/999"))
+                .andExpect(status().isNotFound());
+
+        verify(service).getEmployeeById("999");
+    }
+
+    @Test
+    void testDeleteEmployeeById_deleteFails() throws Exception {
+        EmployeeResponseDTO emp = new EmployeeResponseDTO();
+        emp.setEmployee_name("Chirag");
+
+        when(service.getEmployeeById("123")).thenReturn(emp);
+        when(service.deleteEmployeeByName("Chirag")).thenReturn(false);
+
+        mockMvc.perform(delete("/employees/123"))
+                .andExpect(status().isInternalServerError());
+
+        verify(service).getEmployeeById("123");
+        verify(service).deleteEmployeeByName("Chirag");
+    }
+
+    @Test
+    void testGetEmployeesByNameSearch_found() throws Exception {
+        EmployeeResponseDTO employee1 = new EmployeeResponseDTO();
+        employee1.setEmployee_name("Chirag");
+        EmployeeResponseDTO employee2 = new EmployeeResponseDTO();
+        employee2.setEmployee_name("John");
+
+        when(service.getAllEmployees()).thenReturn(List.of(employee1, employee2));
+        mockMvc.perform(get("/employees/search/chi"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(List.of(employee1))));
+
+        verify(service).getAllEmployees();
+    }
+
+    @Test
+    void testGetHighestSalaryOfEmployees() throws Exception {
+        EmployeeResponseDTO employee1 = new EmployeeResponseDTO();
+        employee1.setEmployee_salary(1000);
+        EmployeeResponseDTO employee2 = new EmployeeResponseDTO();
+        employee2.setEmployee_salary(5000);
+
+        when(service.getAllEmployees()).thenReturn(List.of(employee1, employee2));
+        mockMvc.perform(get("/employees/highestSalary"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("5000"));
+
+        verify(service).getAllEmployees();
+    }
+
+    @Test
+    void testGetTopTenHighestEarningEmployeeNames() throws Exception {
+        EmployeeResponseDTO employee1 = new EmployeeResponseDTO();
+        employee1.setEmployee_name("Chirag");
+        employee1.setEmployee_salary(5000);
+        EmployeeResponseDTO employee2 = new EmployeeResponseDTO();
+        employee2.setEmployee_name("John");
+        employee2.setEmployee_salary(1000);
+
+        when(service.getAllEmployees()).thenReturn(List.of(employee1, employee2));
+        mockMvc.perform(get("/employees/topTenHighestEarningEmployeeNames"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(List.of("Chirag", "John"))));
+    }
+}
