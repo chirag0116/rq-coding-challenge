@@ -1,0 +1,138 @@
+{
+	"info": {
+		"_postman_id": "81566bbf-4291-43de-8b35-9f1c81a6dcdd",
+		"name": "ReliaQuest Coding Challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25726552"
+	},
+	"item": [
+		{
+			"name": "Get Employees",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8111/employees",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8111",
+					"path": [
+						"employees"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search Employee Names",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8111/employees/search/sk",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8111",
+					"path": [
+						"employees",
+						"search",
+						"sk"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search Employees by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8111/employees/1064bdb2-a1bb-4ca9-a89e-03d4f93d69bf",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8111",
+					"path": [
+						"employees",
+						"1064bdb2-a1bb-4ca9-a89e-03d4f93d69bf"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get highest salary",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8111/employees/highestSalary",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8111",
+					"path": [
+						"employees",
+						"highestSalary"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Employee",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\" : \"Chirag Narang\",\r\n    \"salary\" : 9999999,\r\n    \"age\" : 24,\r\n    \"title\" : \"Developer\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8111/employees",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8111",
+					"path": [
+						"employees"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete employee",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8111/employees/1064bdb2-a1bb-4ca9-a89e-03d4f93d69bf",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8111",
+					"path": [
+						"employees",
+						"1064bdb2-a1bb-4ca9-a89e-03d4f93d69bf"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
