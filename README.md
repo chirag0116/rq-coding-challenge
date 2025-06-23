@@ -1,14 +1,61 @@
 # ReliaQuest Coding Challenge
 
+## Features
+
+- Get all employees
+- Get employees filtered by name
+- Get employee by ID
+- Get highest salary
+- Get top 10 highest-earning employee names
+- Create new employee
+- Delete employee by ID
+- Automatic retries for server side errors (using Spring Retry)
+- Global exception handling with meaningful error responses (Using Spring Controller Advice)
+- Unit and integration tests
+
+## Prerequisites
+
+- Java 17
+- Gradle
+- Git
+
+## Setup
+
+1. Clone the repository: git clone https://github.com/your-repo-url.git
+2. cd into project
+3. Start server on port 8112 with the command: `./gradlew server:bootRun`
+4. Build the api side of the app with command: `./gradlew clean build`
+5. Start the app with command: `./gradlew bootRun`
+
+## Run tests
+
+Run tests with the following command: `./gradlew test`
+
+## Error Handling
+
+Errors are handled by a GlobalExceptionHandler and are displayed as a ApiErrorResponse with meaningful data about the errors.
+
+## Postman
+
+A Postman collection is available at the root level of this repository named ReliaQuest Coding Challenge.postman_collection.json
+It can be imported to test all endpoints.
+
+## License
+
+This coding challenge was provided without a license
+
+## REMAINDER OF THIS FILE WAS GIVEN AS PART OF THE PROJECT
+
 #### In this assessment you will be tasked with filling out the functionality of different methods that will be listed further down.
 
 These methods will require some level of API interactions with Mock Employee API at http://localhost:8112/api/v1/employee.
 
-Please keep the following in mind when doing this assessment: 
-* clean coding practices
-* test driven development 
-* logging
-* scalability
+Please keep the following in mind when doing this assessment:
+
+- clean coding practices
+- test driven development
+- logging
+- scalability
 
 See the section **How to Run Mock Employee API** for further instruction on starting the Mock Employee API.
 
@@ -75,10 +122,12 @@ deleteEmployeeById(...)
             ],
             "status": "Successfully processed request."
         }
+
 ---
+
     request:
         method: GET
-        path: 
+        path:
             id (String)
         full route: http://localhost:8112/api/v1/employee/{id}
         note: 404-Not Found, if entity is unrecognizable
@@ -94,10 +143,12 @@ deleteEmployeeById(...)
             },
             "status": ....
         }
+
 ---
+
     request:
         method: POST
-        body: 
+        body:
             name (String | not blank),
             salary (Integer | greater than zero),
             age (Integer | min = 16, max = 75),
@@ -115,7 +166,9 @@ deleteEmployeeById(...)
             },
             "status": ....
         }
+
 ---
+
     request:
         method: DELETE
         body:
@@ -132,7 +185,7 @@ deleteEmployeeById(...)
 Start **Server** Spring Boot application.
 `./gradlew server:bootRun`
 
-Each invocation of **Server** application triggers a new list of mock employee data. While live testing, you'll want to keep 
+Each invocation of **Server** application triggers a new list of mock employee data. While live testing, you'll want to keep
 this server running if you require consistent data. Additionally, the web server will randomly choose when to rate
 limit requests, so keep this mind when designing/implementing the actual Employee API.
 
@@ -141,8 +194,7 @@ _Note_: Console logs each mock employee upon startup.
 ### Code Formatting
 
 This project utilizes Gradle plugin [Diffplug Spotless](https://github.com/diffplug/spotless/tree/main/plugin-gradle) to enforce format
-and style guidelines with every build. 
+and style guidelines with every build.
 
 To resolve any errors, you must run **spotlessApply** task.
 `./gradlew spotlessApply`
-
